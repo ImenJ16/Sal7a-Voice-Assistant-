@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Voice Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- Header -->
+        <header>
+            <h1>Sal7a - Voice Assistant</h1>
+            <p class="subtitle">Talk to me baby</p>
+        </header>
+
+        <!-- Chat Container -->
+        <div class="chat-container" id="chatContainer">
+            <!-- Welcome message -->
+            <div class="message bot-message">
+                <div class="message-content">
+                    <p>Hey there! I'm Sal7a, your AI assistant. Tap the microphone and start talking!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <!-- Microphone Button -->
+            <button class="mic-button" id="micButton">
+                <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                    <line x1="8" y1="23" x2="16" y2="23"></line>
+                </svg>
+                <span class="mic-text">Tap to speak</span>
+            </button>
+
+            <!-- Status indicator -->
+            <div class="status" id="status">Ready</div>
+        </div>
+
+        <!-- Audio visualizer (optional cool effect) -->
+        <canvas id="visualizer" class="visualizer"></canvas>
+    </div>
+
+    <!-- Audio player (hidden, for playing responses) -->
+    <audio id="audioPlayer" style="display: none;"></audio>
+
+    <!-- JavaScript -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
