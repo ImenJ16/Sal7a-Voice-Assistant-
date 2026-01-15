@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Voice Assistant</title>
+    <title>AI Voice Assistant - Productivity Dashboard</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -12,21 +12,78 @@
         
         <!-- Header -->
         <header>
-            <h1>Sal7a - Voice Assistant</h1>
-            <p class="subtitle">Talk to me baby</p>
+            <h1>🤖 AI Productivity Assistant</h1>
+            <p class="subtitle">Voice-controlled productivity dashboard</p>
+            <!--button class="demo-button" id="demoButton">▶️ Run Demo</button-->
         </header>
 
-        <!-- Chat Container -->
-        <div class="chat-container" id="chatContainer">
-            <!-- Welcome message -->
-            <div class="message bot-message">
-                <div class="message-content">
-                    <p>Hey there! I'm Sal7a, your AI assistant. Tap the microphone and start talking!</p>
+        <!-- Main Content Area -->
+        <div class="main-content">
+            
+            <!-- Left Panel: Chat -->
+            <div class="chat-panel">
+                <h3>💬 Conversation</h3>
+                <div class="chat-container" id="chatContainer">
+                    <div class="message bot-message">
+                        <div class="message-content">
+                            <p>👋 Hey! I'm your productivity assistant. Try saying:</p>
+                            <ul>
+                                <li>"Add todo: Finish project"</li>
+                                <li>"Show my todos"</li>
+                                <li>"What's the weather in Paris?"</li>
+                                <li>"Set timer for 5 minutes"</li>
+                                <li>"Calculate 15% of 1000"</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
+            </div>
+
+            <!-- Right Panel: Widgets -->
+            <div class="widgets-panel">
+                
+                <!-- Todo List Widget -->
+                <div class="widget todo-widget">
+                    <h3>✅ Todo List</h3>
+                    <div class="todo-list" id="todoList">
+                        <p class="empty-state">No todos yet. Say "Add todo: [your task]"</p>
+                    </div>
+                    <div class="todo-actions">
+                        <button class="widget-button" id="clearCompleted">Clear Completed</button>
+                        <button class="widget-button" id="exportTodos">📥 Export</button>
+                    </div>
+                </div>
+
+                <!-- Weather Widget -->
+                <div class="widget weather-widget" id="weatherWidget" style="display: none;">
+                    <h3>🌤️ Weather</h3>
+                    <div class="weather-content" id="weatherContent">
+                        <!-- Weather data will appear here -->
+                    </div>
+                </div>
+
+                <!-- Timer Widget -->
+                <div class="widget timer-widget" id="timerWidget" style="display: none;">
+                    <h3>⏱️ Timer</h3>
+                    <div class="timer-display" id="timerDisplay">00:00</div>
+                    <div class="timer-controls">
+                        <button class="widget-button" id="pauseTimer">Pause</button>
+                        <button class="widget-button" id="cancelTimer">Cancel</button>
+                    </div>
+                </div>
+
+                <!-- Calculator Widget -->
+                <div class="widget calculator-widget" id="calculatorWidget" style="display: none;">
+                    <h3>🔢 Calculator</h3>
+                    <div class="calculator-result" id="calculatorResult">
+                        <!-- Calculation results will appear here -->
+                    </div>
+                </div>
+
             </div>
         </div>
 
-        <!-- Input Area -->
+        <!-- Input Area (Bottom) -->
         <div class="input-area">
             <!-- Microphone Button -->
             <button class="mic-button" id="micButton">
@@ -43,8 +100,6 @@
             <div class="status" id="status">Ready</div>
         </div>
 
-        <!-- Audio visualizer (optional cool effect) -->
-        <canvas id="visualizer" class="visualizer"></canvas>
     </div>
 
     <!-- Audio player (hidden, for playing responses) -->

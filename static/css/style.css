@@ -17,42 +17,85 @@ body {
 
 /* ===== MAIN CONTAINER ===== */
 .container {
-    background: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.98);
     border-radius: 24px;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 600px;
-    height: 700px;
+    max-width: 1200px;
+    height: 85vh;
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    position: relative;
 }
 
 /* ===== HEADER ===== */
 header {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 24px;
-    text-align: center;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 header h1 {
-    font-size: 28px;
-    margin-bottom: 8px;
+    font-size: 24px;
+    margin-bottom: 4px;
 }
 
 .subtitle {
-    font-size: 14px;
+    font-size: 13px;
     opacity: 0.9;
 }
 
-/* ===== CHAT CONTAINER ===== */
+.demo-button {
+    background: rgba(255, 255, 255, 0.2);
+    border: 2px solid white;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.demo-button:hover {
+    background: white;
+    color: #667eea;
+    transform: scale(1.05);
+}
+
+/* ===== MAIN CONTENT (Two Columns) ===== */
+.main-content {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    gap: 20px;
+    padding: 20px;
+}
+
+/* ===== CHAT PANEL (Left) ===== */
+.chat-panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background: #f5f5f5;
+    border-radius: 16px;
+    padding: 16px;
+    overflow: hidden;
+}
+
+.chat-panel h3 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 12px;
+}
+
 .chat-container {
     flex: 1;
-    padding: 20px;
     overflow-y: auto;
-    background: #f5f5f5;
+    padding-right: 8px;
 }
 
 /* Custom scrollbar */
@@ -67,6 +110,225 @@ header h1 {
 .chat-container::-webkit-scrollbar-thumb {
     background: #ccc;
     border-radius: 3px;
+}
+
+/* ===== WIDGETS PANEL (Right) ===== */
+.widgets-panel {
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow-y: auto;
+}
+
+.widgets-panel::-webkit-scrollbar {
+    width: 6px;
+}
+
+.widgets-panel::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 3px;
+}
+
+/* ===== WIDGET CARDS ===== */
+.widget {
+    background: white;
+    border-radius: 16px;
+    padding: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.widget h3 {
+    font-size: 16px;
+    color: #333;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* ===== TODO WIDGET ===== */
+.todo-list {
+    max-height: 300px;
+    overflow-y: auto;
+    margin-bottom: 12px;
+}
+
+.empty-state {
+    color: #999;
+    font-size: 13px;
+    text-align: center;
+    padding: 20px;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: all 0.2s ease;
+    animation: slideIn 0.3s ease-out;
+}
+
+.todo-item:hover {
+    background: #e9ecef;
+    transform: translateX(4px);
+}
+
+.todo-item.completed {
+    opacity: 0.6;
+}
+
+.todo-item.completed .todo-text {
+    text-decoration: line-through;
+}
+
+.todo-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.todo-text {
+    flex: 1;
+    font-size: 14px;
+    color: #333;
+}
+
+.todo-delete {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.todo-delete:hover {
+    background: #c0392b;
+    transform: scale(1.1);
+}
+
+.todo-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.widget-button {
+    flex: 1;
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.widget-button:hover {
+    background: #5568d3;
+    transform: translateY(-2px);
+}
+
+/* ===== WEATHER WIDGET ===== */
+.weather-content {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.weather-location {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.weather-temp {
+    font-size: 42px;
+    font-weight: 700;
+    color: #667eea;
+}
+
+.weather-description {
+    font-size: 14px;
+    color: #666;
+    text-transform: capitalize;
+}
+
+.weather-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.weather-detail {
+    background: #f8f9fa;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.weather-detail-label {
+    color: #999;
+    font-size: 11px;
+}
+
+.weather-detail-value {
+    color: #333;
+    font-weight: 600;
+    margin-top: 4px;
+}
+
+/* ===== TIMER WIDGET ===== */
+.timer-display {
+    font-size: 48px;
+    font-weight: 700;
+    color: #667eea;
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-family: 'Courier New', monospace;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 8px;
+}
+
+/* ===== CALCULATOR WIDGET ===== */
+.calculator-result {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 12px;
+    font-size: 18px;
+    color: #333;
+    text-align: center;
+}
+
+.calculator-expression {
+    color: #999;
+    font-size: 14px;
+    margin-bottom: 8px;
+}
+
+.calculator-answer {
+    font-size: 32px;
+    font-weight: 700;
+    color: #667eea;
 }
 
 /* ===== MESSAGE BUBBLES ===== */
@@ -88,11 +350,21 @@ header h1 {
 }
 
 .message-content {
-    max-width: 80%;
+    max-width: 85%;
     padding: 12px 16px;
     border-radius: 18px;
-    font-size: 15px;
+    font-size: 14px;
     line-height: 1.5;
+}
+
+.message-content ul {
+    margin: 8px 0 0 20px;
+    font-size: 13px;
+}
+
+.message-content li {
+    margin: 4px 0;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 /* User messages (right side, blue) */
@@ -124,15 +396,15 @@ header h1 {
     background: white;
     border-top: 1px solid #e0e0e0;
     display: flex;
-    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 16px;
 }
 
 /* ===== MICROPHONE BUTTON ===== */
 .mic-button {
-    width: 80px;
-    height: 80px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     border: none;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -170,13 +442,13 @@ header h1 {
 }
 
 .mic-icon {
-    width: 32px;
-    height: 32px;
+    width: 28px;
+    height: 28px;
     stroke-width: 2;
 }
 
 .mic-text {
-    font-size: 10px;
+    font-size: 9px;
     margin-top: 4px;
     opacity: 0.9;
 }
@@ -206,22 +478,7 @@ header h1 {
     color: #27ae60;
 }
 
-/* ===== VISUALIZER (Optional) ===== */
-.visualizer {
-    position: absolute;
-    bottom: 120px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 200px;
-    height: 60px;
-    display: none;
-}
-
-.visualizer.active {
-    display: block;
-}
-
-/* ===== LOADING DOTS ===== */
+/* ===== TYPING INDICATOR ===== */
 .typing-indicator {
     display: flex;
     gap: 4px;
@@ -254,13 +511,28 @@ header h1 {
 }
 
 /* ===== RESPONSIVE ===== */
+@media (max-width: 968px) {
+    .main-content {
+        flex-direction: column;
+    }
+    
+    .widgets-panel {
+        width: 100%;
+    }
+}
+
 @media (max-width: 768px) {
     .container {
         height: 100vh;
         border-radius: 0;
     }
     
+    header {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
     header h1 {
-        font-size: 24px;
+        font-size: 20px;
     }
 }
