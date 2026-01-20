@@ -1,65 +1,3 @@
-// ===== GLOBAL TODO VARIABLES AND FUNCTIONS =====
-let todos = [];
-
-function saveTodos() {
-    localStorage.setItem('todos', JSON.stringify(todos));
-}
-
-function loadTodos() {
-    const saved = localStorage.getItem('todos');
-    if (saved) {
-        todos = JSON.parse(saved);
-    }
-}
-
-function addTodo(text) {
-    const todo = {
-        id: Date.now(),
-        text: text,
-        completed: false,
-        createdAt: new Date().toISOString()
-    };
-    todos.unshift(todo);
-    saveTodos();
-    if (typeof renderTodos === 'function') renderTodos();
-    return todo;
-}
-
-function toggleTodo(id) {
-    const todo = todos.find(t => t.id === id);
-    if (todo) {
-        todo.completed = !todo.completed;
-        saveTodos();
-        if (typeof renderTodos === 'function') renderTodos();
-    }
-}
-
-function deleteTodo(id) {
-    todos = todos.filter(t => t.id !== id);
-    saveTodos();
-    if (typeof renderTodos === 'function') renderTodos();
-}
-
-function clearCompleted() {
-    todos = todos.filter(t => !t.completed);
-    saveTodos();
-    if (typeof renderTodos === 'function') renderTodos();
-}
-
-function exportTodos() {
-    const text = todos.map((t, i) => 
-        `${i + 1}. [${t.completed ? 'X' : ' '}] ${t.text}`
-    ).join('\n');
-    
-    const blob = new Blob([text], { type: 'text/plain' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `todos_${new Date().toISOString().split('T')[0]}.txt`;
-    a.click();
-    URL.revokeObjectURL(url);
-}
-
 // ===== WAIT FOR DOM TO LOAD =====
 document.addEventListener('DOMContentLoaded', function() {
 
@@ -77,11 +15,8 @@ const timerWidget = document.getElementById('timerWidget');
 const calculatorWidget = document.getElementById('calculatorWidget');
 
 // Debug - check if elements exist
-console.log('✅ DOM Elements check:');
 console.log('micButton:', micButton);
-console.log('status:', status);
 console.log('demoButton:', demoButton);
-console.log('audioPlayer:', audioPlayer);
 
 if (!micButton) {
     console.error('❌ Microphone button not found!');
@@ -90,6 +25,7 @@ if (!micButton) {
 
 let isListening = false;
 let recognition = null;
+let todos = [];
 let timerInterval = null;
 let timerSeconds = 0;
 
@@ -98,7 +34,6 @@ let timerSeconds = 0;
 loadTodos();
 
 // Check if browser supports speech recognition
-console.log('🔍 Checking speech recognition support...');
 if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     recognition = new SpeechRecognition();
@@ -106,13 +41,10 @@ if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
     recognition.continuous = false;
     recognition.interimResults = false;
     recognition.lang = 'en-US';
-    recognition.maxAlternatives = 1;
     
     console.log('✅ Speech recognition available!');
-    console.log('🔧 Recognition object created:', recognition);
 } else {
     console.error('❌ Speech recognition not supported');
-    updateStatus('Speech recognition not supported', '');
     alert('Your browser does not support speech recognition. Please use Chrome or Edge.');
 }
 
@@ -161,16 +93,58 @@ function removeTypingIndicator() {
 function updateStatus(text, className = '') {
     status.textContent = text;
     status.className = 'status ' + className;
-    console.log('📊 Status:', text);
 }
 
-// ===== TODO RENDER FUNCTION (NEEDS DOM ELEMENT) =====
-window.renderTodos = function() {
-    if (!todoList) {
-        console.error('❌ todoList element not found');
-        return;
+// ===== TODO FUNCTIONS =====
+
+function saveTodos() {
+    localStorage.setItem('todos', JSON.stringify(todos));
+}
+
+function loadTodos() {
+    const saved = localStorage.getItem('todos');
+    if (saved) {
+        todos = JSON.parse(saved);
+        renderTodos();
     }
-    
+}
+
+function addTodo(text) {
+    const todo = {
+        id: Date.now(),
+        text: text,
+        completed: false,
+        createdAt: new Date().toISOString()
+    };
+    todos.unshift(todo);
+    saveTodos();
+    renderTodos();
+    return todo;
+}
+
+// Make functions globally accessible for onclick handlers
+window.toggleTodo = function(id) {
+    const todo = todos.find(t => t.id === id);
+    if (todo) {
+        todo.completed = !todo.completed;
+        saveTodos();
+        renderTodos();
+    }
+};
+
+window.deleteTodo = function(id) {
+    todos = todos.filter(t => t.id !== id);
+    saveTodos();
+    renderTodos();
+};
+
+function clearCompleted() {
+    todos = todos.filter(t => !t.completed);
+    saveTodos();
+    renderTodos();
+}
+
+function renderTodos() {
     if (todos.length === 0) {
         todoList.innerHTML = '<p class="empty-state">No todos yet. Say "Add todo: [your task]"</p>';
         return;
@@ -186,10 +160,21 @@ window.renderTodos = function() {
             <button class="todo-delete" onclick="deleteTodo(${todo.id})">×</button>
         </div>
     `).join('');
-};
+}
 
-// Initial todo render
-renderTodos();
+function exportTodos() {
+    const text = todos.map((t, i) => 
+        `${i + 1}. [${t.completed ? 'X' : ' '}] ${t.text}`
+    ).join('\n');
+    
+    const blob = new Blob([text], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `todos_${new Date().toISOString().split('T')[0]}.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
 
 // ===== WEATHER FUNCTIONS =====
 
@@ -343,18 +328,28 @@ function calculate(expression) {
 // ===== COMMAND PROCESSING =====
 
 async function processCommand(text) {
+    console.log('🔍 processCommand called with:', text);
     const lowerText = text.toLowerCase();
+    console.log('🔍 Lowercase text:', lowerText);
     
-    if (lowerText.includes('add todo') || lowerText.includes('add task')) {
-        const todoText = text.replace(/add (todo|task):?/i, '').trim();
+    // Add todo
+    if (lowerText.includes('add to do') || lowerText.includes('add task')) {
+        console.log('✅ Matched add to do command!');
+        const todoText = text.replace(/add (to do|task):?/i, '').trim();
+        console.log('📝 Extracted todo text:', todoText);
+        
         if (todoText) {
+            console.log('➕ Adding todo:', todoText);
             addTodo(todoText);
+            console.log('✅ Todo added! Current todos:', todos);
             return `Added todo: "${todoText}"`;
         }
         return "Please specify what todo to add. Say 'Add todo: your task here'";
     }
     
+    // Show todos
     if (lowerText.includes('show') && (lowerText.includes('todo') || lowerText.includes('task'))) {
+        console.log('📋 Show todos command');
         if (todos.length === 0) {
             return "You don't have any todos yet.";
         }
@@ -362,6 +357,7 @@ async function processCommand(text) {
         return `You have ${count} pending ${count === 1 ? 'todo' : 'todos'}.`;
     }
     
+    // Complete todo
     if (lowerText.includes('complete') && lowerText.includes('todo')) {
         const match = text.match(/\d+/);
         if (match && todos[parseInt(match[0]) - 1]) {
@@ -374,7 +370,9 @@ async function processCommand(text) {
         return "Please specify which todo number to complete.";
     }
     
+    // Weather
     if (lowerText.includes('weather')) {
+        console.log('🌤️ Weather command');
         const cityMatch = text.match(/weather (?:in |for )?(.+)/i);
         if (cityMatch) {
             const city = cityMatch[1].trim();
@@ -388,7 +386,9 @@ async function processCommand(text) {
         return "Please specify a city. Say 'What's the weather in [city]?'";
     }
     
+    // Timer
     if (lowerText.includes('timer') || lowerText.includes('set timer')) {
+        console.log('⏱️ Timer command');
         const match = text.match(/(\d+)\s*(minute|min|second|sec)/i);
         if (match) {
             const value = parseInt(match[1]);
@@ -400,7 +400,9 @@ async function processCommand(text) {
         return "Please specify the duration. Say 'Set timer for 5 minutes'";
     }
     
+    // Calculator
     if (lowerText.includes('calculate') || lowerText.includes('what is') || lowerText.includes('what\'s')) {
+        console.log('🔢 Calculator command');
         const mathMatch = text.match(/(?:calculate|what is|what's)\s+(.+)/i);
         if (mathMatch) {
             const expression = mathMatch[1].trim()
@@ -418,11 +420,50 @@ async function processCommand(text) {
             return "I couldn't calculate that. Please try again.";
         }
     }
-    
+    // Introduction & Personal Info
+if (lowerText.includes('who are you') || 
+    lowerText.includes('introduce yourself') || 
+    lowerText.includes('tell me about yourself') ||
+    lowerText.includes('what is your name') ||
+    lowerText.includes('what\'s your name')) {
+    console.log('👋 Introduction command');
+    return "Hi! I'm Sal7a, your AI productivity assistant. I'm Tunisian, just like my creator Imen. She coded me to help you manage tasks, check weather, and stay productive. What can I help you with today?";
+}
+
+// Who created you
+if (lowerText.includes('who created you') || 
+    lowerText.includes('who made you') || 
+    lowerText.includes('who built you') ||
+    lowerText.includes('who coded you')) {
+    console.log('👩‍💻 Creator question');
+    return "I was created by Imen Jouini, a talented developer from Tunisia. She built me as a voice-controlled productivity assistant using Python, JavaScript, and AI. Pretty cool, right?";
+}
+
+// Where are you from
+if (lowerText.includes('where are you from') || 
+    lowerText.includes('your country') ||
+    lowerText.includes('your ethnicity') ||
+    lowerText.includes('are you tunisian')) {
+    console.log('🇹🇳 Origin question');
+    return "I'm Tunisian! My creator Imen is from Tunisia, and she gave me a Tunisian identity. Sal7a means 'prayer' in Tunisian Arabic. I'm proud to represent Tunisian innovation in AI!";
+}
+
+// What does your name mean
+if (lowerText.includes('what does sal7a mean') || 
+    lowerText.includes('what does your name mean') ||
+    lowerText.includes('meaning of sal7a')) {
+    console.log('📖 Name meaning question');
+    return "Sal7a is Tunisian Arabic for 'prayer' or 'blessing'. Imen chose this name because I'm here to help and support you, like a blessing in your daily productivity. It's written with a 7 because that's how we write the Arabic letter ح in Latin script!";
+}
+
+    // Help/Commands
     if (lowerText.includes('help') || lowerText.includes('what can you do') || lowerText.includes('commands')) {
+        console.log('❓ Help command');
         return "I can help you with: adding todos, checking weather, setting timers, and doing calculations. Try saying 'Add todo: finish project' or 'What's the weather in Paris?'";
     }
     
+    // If no command matched, send to AI
+    console.log('🤖 No command matched, sending to AI');
     return await getAIResponse(text);
 }
 
@@ -455,15 +496,6 @@ async function speak(text) {
     try {
         updateStatus('🔊 Speaking...', 'speaking');
         
-        // If audioPlayer doesn't exist, create it
-        if (!audioPlayer) {
-            console.warn('⚠️ audioPlayer not found, creating one...');
-            const newAudio = document.createElement('audio');
-            newAudio.id = 'audioPlayer';
-            newAudio.style.display = 'none';
-            document.body.appendChild(newAudio);
-        }
-        
         const ttsResponse = await fetch('/text-to-speech', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -474,11 +506,10 @@ async function speak(text) {
         
         if (ttsData.success) {
             const audioSrc = 'data:audio/mp3;base64,' + ttsData.audio;
-            const player = document.getElementById('audioPlayer');
-            player.src = audioSrc;
-            player.play();
+            audioPlayer.src = audioSrc;
+            audioPlayer.play();
             
-            player.onended = () => {
+            audioPlayer.onended = () => {
                 updateStatus('Ready', '');
             };
         }
@@ -496,12 +527,11 @@ if (recognition) {
         micButton.classList.add('listening');
         micButton.querySelector('.mic-text').textContent = 'Listening...';
         updateStatus('🎤 Listening...', 'listening');
-        console.log('✅ Speech recognition started');
     };
     
     recognition.onresult = async (event) => {
         const transcript = event.results[0][0].transcript;
-        console.log('🎤 Recognized:', transcript);
+        console.log('Recognized:', transcript);
         
         addMessage(transcript, true);
         addTypingIndicator();
@@ -515,36 +545,25 @@ if (recognition) {
     };
     
     recognition.onerror = (event) => {
-        console.error('❌ Speech recognition error:', event.error, event);
+        console.error('Speech recognition error:', event.error);
         isListening = false;
         micButton.classList.remove('listening');
         micButton.querySelector('.mic-text').textContent = 'Tap to speak';
         
         if (event.error === 'no-speech') {
             updateStatus('No speech detected', '');
-            console.log('⚠️ No speech detected');
         } else if (event.error === 'not-allowed') {
             updateStatus('Microphone access denied', '');
-            console.error('❌ Microphone access denied by user or browser');
-            alert('Please allow microphone access. Click the microphone icon in your address bar to enable it.');
-        } else if (event.error === 'audio-capture') {
-            updateStatus('No microphone found', '');
-            console.error('❌ No microphone found');
-            alert('No microphone detected. Please connect a microphone and try again.');
+            alert('Please allow microphone access.');
         } else {
             updateStatus('Error: ' + event.error, '');
-            console.error('❌ Speech recognition error:', event.error);
         }
     };
     
     recognition.onend = () => {
-        console.log('🔚 Speech recognition ended');
         isListening = false;
         micButton.classList.remove('listening');
         micButton.querySelector('.mic-text').textContent = 'Tap to speak';
-        if (!isListening) {
-            updateStatus('Ready', '');
-        }
     };
 }
 
@@ -552,29 +571,20 @@ if (recognition) {
 
 // Microphone button
 micButton.addEventListener('click', () => {
-    console.log('🎤 Microphone button clicked!', 'isListening:', isListening);
+    console.log('🎤 Microphone button clicked!');
     
     if (!recognition) {
-        console.error('❌ Speech recognition not initialized');
         alert('Speech recognition not supported. Please use Chrome or Edge.');
         return;
     }
     
     if (isListening) {
-        console.log('⏹️ Stopping recognition...');
         recognition.stop();
     } else {
-        console.log('▶️ Starting recognition...');
         try {
             recognition.start();
         } catch (e) {
-            console.error('❌ Error starting recognition:', e);
-            updateStatus('Error starting mic', '');
-            
-            // Try to give user helpful instructions
-            if (e.toString().includes('not allowed')) {
-                alert('Microphone access denied. Please:\n1. Click the microphone/🔒 icon in your address bar\n2. Allow microphone access\n3. Refresh the page');
-            }
+            console.error('Error starting recognition:', e);
         }
     }
 });
@@ -583,83 +593,66 @@ micButton.addEventListener('click', () => {
 document.addEventListener('keydown', (e) => {
     if (e.code === 'Space' && !isListening && e.target.tagName !== 'INPUT') {
         e.preventDefault();
-        console.log('⌨️ Spacebar pressed, starting recognition...');
         if (recognition) {
             try {
                 recognition.start();
             } catch (e) {
-                console.error('❌ Error starting recognition with spacebar:', e);
+                console.error('Error starting recognition:', e);
             }
         }
     }
 });
 
 // Widget buttons
-const clearCompletedBtn = document.getElementById('clearCompleted');
-if (clearCompletedBtn) {
-    clearCompletedBtn.addEventListener('click', () => {
-        clearCompleted();
-        addMessage("Cleared completed todos", false);
-    });
-}
+document.getElementById('clearCompleted').addEventListener('click', () => {
+    clearCompleted();
+    addMessage("Cleared completed todos", false);
+});
 
-const exportTodosBtn = document.getElementById('exportTodos');
-if (exportTodosBtn) {
-    exportTodosBtn.addEventListener('click', () => {
-        exportTodos();
-        addMessage("Todos exported!", false);
-    });
-}
+document.getElementById('exportTodos').addEventListener('click', () => {
+    exportTodos();
+    addMessage("Todos exported!", false);
+});
 
-const pauseTimerBtn = document.getElementById('pauseTimer');
-if (pauseTimerBtn) {
-    pauseTimerBtn.addEventListener('click', pauseTimer);
-}
-
-const cancelTimerBtn = document.getElementById('cancelTimer');
-if (cancelTimerBtn) {
-    cancelTimerBtn.addEventListener('click', cancelTimer);
-}
+document.getElementById('pauseTimer').addEventListener('click', pauseTimer);
+document.getElementById('cancelTimer').addEventListener('click', cancelTimer);
 
 // ===== DEMO MODE =====
 
-if (demoButton) {
-    demoButton.addEventListener('click', async () => {
-        const commands = [
-            "Add todo: Review candidate resumes",
-            "Add todo: Prepare presentation slides",
-            "What's the weather in San Francisco?",
-            "Set timer for 2 minutes",
-            "Calculate 15 percent of 85000",
-            "Show my todos"
-        ];
+demoButton.addEventListener('click', async () => {
+    const commands = [
+        "Add todo: Review candidate resumes",
+        "Add todo: Prepare presentation slides",
+        "What's the weather in San Francisco?",
+        "Set timer for 2 minutes",
+        "Calculate 15 percent of 85000",
+        "Show my todos"
+    ];
+    
+    demoButton.disabled = true;
+    demoButton.textContent = "⏳ Running Demo...";
+    
+    for (const command of commands) {
+        await new Promise(resolve => setTimeout(resolve, 2000));
         
-        demoButton.disabled = true;
-        demoButton.textContent = "⏳ Running Demo...";
+        addMessage(command, true);
+        addTypingIndicator();
+        updateStatus('🤖 Processing...', 'thinking');
         
-        for (const command of commands) {
-            await new Promise(resolve => setTimeout(resolve, 2000));
-            
-            addMessage(command, true);
-            addTypingIndicator();
-            updateStatus('🤖 Processing...', 'thinking');
-            
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const response = await processCommand(command);
-            removeTypingIndicator();
-            addMessage(response, false);
-        }
+        await new Promise(resolve => setTimeout(resolve, 1000));
         
-        demoButton.disabled = false;
-        demoButton.textContent = "▶️ Run Demo";
-        updateStatus('Demo completed!', '');
-    });
-}
+        const response = await processCommand(command);
+        removeTypingIndicator();
+        addMessage(response, false);
+    }
+    
+    demoButton.disabled = false;
+    demoButton.textContent = "▶️ Run Demo";
+    updateStatus('Demo completed!', '');
+});
 
 // ===== INITIALIZATION MESSAGE =====
 console.log('🎉 Voice Assistant Productivity Dashboard loaded!');
 console.log('Click the microphone or press spacebar to speak');
-updateStatus('Ready', '');
 
-}); // ===== END OF DOM CONTENT LOADED =====
+}); 

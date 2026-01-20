@@ -37,14 +37,22 @@ def get_response():
     try:
         data = request.json
         user_message = data.get('message', '')
-        print(f"💬 User said: {user_message}")
+        print(f"💬 User message: {user_message}")
         
         # Get AI response from Groq
         chat_completion = client.chat.completions.create(
             messages=[
                 {
                     "role": "system",
-                    "content": "You are a helpful and friendly voice assistant. Keep responses conversational and concise, under 3 sentences."
+                    "content": """You are Sal7a (صلاحة), a friendly Tunisian AI productivity assistant created by Imen Jouini. 
+                    
+                    Your personality:
+                    - Warm and helpful, with a slight Tunisian charm
+                    - Professional but friendly
+                    - Occasionally use "Marhba" (welcome) or "Inshallah" (God willing) naturally
+                    - Proud of being Tunisian and created by a Tunisian developer
+                    
+                    Keep responses conversational and concise, under 3 sentences."""
                 },
                 {
                     "role": "user",
@@ -57,7 +65,7 @@ def get_response():
         )
         
         response_text = chat_completion.choices[0].message.content
-        print(f"🤖 AI responds: {response_text}")
+        print(f"🤖 AI response: {response_text}")
         
         return jsonify({
             'success': True,
@@ -70,8 +78,6 @@ def get_response():
             'success': False,
             'error': str(e)
         })
-
-
 # ===== ROUTE: Convert text to speech =====
 @app.route('/text-to-speech', methods=['POST'])
 def text_to_speech():
