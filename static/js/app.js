@@ -332,42 +332,182 @@ async function processCommand(text) {
     const lowerText = text.toLowerCase();
     console.log('🔍 Lowercase text:', lowerText);
     
-    // Add todo
-    if (lowerText.includes('add to do') || lowerText.includes('add task')) {
+    // Introduction & Personal Info
+    if (lowerText.includes('who are you') || 
+        lowerText.includes('introduce yourself') || 
+        lowerText.includes('tell me about yourself') ||
+        lowerText.includes('what is your name') ||
+        lowerText.includes('what\'s your name')) {
+        console.log('👋 Introduction command');
+        return "Hi! I'm Salha, your AI productivity assistant. I'm Tunisian, just like my creator Imen. She coded me to help you manage tasks, check weather, and stay productive. What can I help you with today?";
+    }
+    
+    // Who created you
+    if (lowerText.includes('who created you') || 
+        lowerText.includes('who made you') || 
+        lowerText.includes('who built you') ||
+        lowerText.includes('who coded you')) {
+        console.log('👩‍💻 Creator question');
+        return "I was created by Imen Jouini, a talented developer from Tunisia. She built me as a voice-controlled productivity assistant using Python, JavaScript, and AI. Pretty cool, right?";
+    }
+    
+    // Where are you from
+    if (lowerText.includes('where are you from') || 
+        lowerText.includes('your country') ||
+        lowerText.includes('your ethnicity') ||
+        lowerText.includes('are you tunisian')) {
+        console.log('🇹🇳 Origin question');
+        return "I'm Tunisian! My creator Imen is from Tunisia, and she gave me a Tunisian identity. Salha means 'prayer' in Tunisian Arabic. I'm proud to represent Tunisian innovation in AI!";
+    }
+    
+    // What does your name mean
+    if (lowerText.includes('what does salha mean') || 
+        lowerText.includes('what does your name mean') ||
+        lowerText.includes('meaning of salha')) {
+        console.log('📖 Name meaning question');
+        return "Salha is Tunisian Arabic for 'prayer' or 'blessing'. Imen chose this name because I'm here to help and support you, like a blessing in your daily productivity. It's written with a 7 because that's how we write the Arabic letter ح in Latin script!";
+    }
+    
+    // Add todo - FLEXIBLE VERSION
+    if ((lowerText.includes('add') || lowerText.includes('create')) && 
+        (lowerText.includes('to do') || lowerText.includes('to do') || lowerText.includes('task'))) {
         console.log('✅ Matched add to do command!');
-        const todoText = text.replace(/add (to do|task):?/i, '').trim();
-        console.log('📝 Extracted todo text:', todoText);
         
-        if (todoText) {
-            console.log('➕ Adding todo:', todoText);
+        let todoText = text
+            .replace(/add (a )?todo:?/i, '')
+            .replace(/add (a )?to do:?/i, '')
+            .replace(/add (a )?task:?/i, '')
+            .replace(/create (a )?to do:?/i, '')
+            .replace(/create (a )?to do:?/i, '')
+            .replace(/create (a )?task:?/i, '')
+            .trim();
+        
+        console.log('📝 Extracted to do text:', todoText);
+        
+        if (todoText && todoText.length > 0) {
+            console.log('➕ Adding to do:', todoText);
             addTodo(todoText);
-            console.log('✅ Todo added! Current todos:', todos);
+            console.log('✅ To do added! Current to dos:', todos);
             return `Added todo: "${todoText}"`;
         }
-        return "Please specify what todo to add. Say 'Add todo: your task here'";
+        return "Please specify what to do to add. Say 'Add to do: your task here'";
     }
     
     // Show todos
-    if (lowerText.includes('show') && (lowerText.includes('todo') || lowerText.includes('task'))) {
+    if (lowerText.includes('show') && (lowerText.includes('to do') || lowerText.includes('to do') || lowerText.includes('task'))) {
         console.log('📋 Show todos command');
         if (todos.length === 0) {
-            return "You don't have any todos yet.";
+            return "You don't have any to dos yet.";
         }
-        const count = todos.filter(t => !t.completed).length;
-        return `You have ${count} pending ${count === 1 ? 'todo' : 'todos'}.`;
+        const total = todos.length;
+        const pending = todos.filter(t => !t.completed).length;
+        const completed = todos.filter(t => t.completed).length;
+        
+        return `You have ${total} total ${total === 1 ? 'to do' : 'to dos'}: ${pending} pending and ${completed} completed.`;
     }
     
-    // Complete todo
-    if (lowerText.includes('complete') && lowerText.includes('todo')) {
+    // Check/Mark todo as complete
+    if ((lowerText.includes('check') || lowerText.includes('complete') || lowerText.includes('mark')) && 
+        (lowerText.includes('to do') || lowerText.includes('to do') || lowerText.includes('task'))) {
+        console.log('✓ Check to do command');
+        
+        // Try to find a number in the command
         const match = text.match(/\d+/);
-        if (match && todos[parseInt(match[0]) - 1]) {
-            const index = parseInt(match[0]) - 1;
-            todos[index].completed = true;
+        if (match) {
+            const todoNum = parseInt(match[0]);
+            const index = todoNum - 1;
+            
+            if (index >= 0 && index < todos.length) {
+                todos[index].completed = true;
+                saveTodos();
+                renderTodos();
+                return `Marked to do ${todoNum} as complete: "${todos[index].text}"`;
+            } else {
+                return `To do number ${todoNum} doesn't exist. You have ${todos.length} to dos.`;
+            }
+        }
+        
+        // If no number, try to complete the first pending todo
+        const firstPending = todos.findIndex(t => !t.completed);
+        if (firstPending !== -1) {
+            todos[firstPending].completed = true;
             saveTodos();
             renderTodos();
-            return `Marked todo ${match[0]} as complete!`;
+            return `Marked first pending to do as complete: "${todos[firstPending].text}"`;
         }
-        return "Please specify which todo number to complete.";
+        
+        return "All to dos are already completed!";
+    }
+    
+    // Delete specific todo from list
+    if ((lowerText.includes('delete') || lowerText.includes('remove')) && 
+        (lowerText.includes('to do') || lowerText.includes('to do') || lowerText.includes('task')) &&
+        !lowerText.includes('all') && !lowerText.includes('completed') && !lowerText.includes('done')) {
+        console.log('🗑️ Delete specific to do command');
+        
+        const match = text.match(/\d+/);
+        if (match) {
+            const todoNum = parseInt(match[0]);
+            const index = todoNum - 1;
+            
+            if (index >= 0 && index < todos.length) {
+                const deletedTodo = todos[index];
+                todos.splice(index, 1);
+                saveTodos();
+                renderTodos();
+                return `Deleted to do ${todoNum}: "${deletedTodo.text}"`;
+            } else {
+                return `To do number ${todoNum} doesn't exist.`;
+            }
+        }
+        
+        return "Please specify which to do to delete. Say 'Delete to do 1' or 'Delete to do 2'";
+    }
+    
+    // Export Todos
+    if ((lowerText.includes('export') || lowerText.includes('download') || lowerText.includes('save')) && 
+        (lowerText.includes('to do') || lowerText.includes('to do') || lowerText.includes('task') || lowerText.includes('list'))) {
+        console.log('📥 Export to dos command');
+        
+        if (todos.length === 0) {
+            return "You don't have any to dos to export yet. Add some first!";
+        }
+        
+        exportTodos();
+        const pending = todos.filter(t => !t.completed).length;
+        const completed = todos.filter(t => t.completed).length;
+        return `Exported ${todos.length} ${todos.length === 1 ? 'to do' : 'to dos'} to a text file: ${pending} pending, ${completed} completed. Check your downloads folder!`;
+    }
+    
+    // Clear/Delete Completed Todos
+    if ((lowerText.includes('clear') || lowerText.includes('delete') || lowerText.includes('remove')) && 
+        (lowerText.includes('completed') || lowerText.includes('done') || lowerText.includes('finished'))) {
+        console.log('🗑️ Clear completed command');
+        
+        const completedCount = todos.filter(t => t.completed).length;
+        
+        if (completedCount === 0) {
+            return "You don't have any completed to dos to clear. All to dos are still pending!";
+        }
+        
+        clearCompleted();
+        return `Cleared ${completedCount} completed ${completedCount === 1 ? 'to do' : 'to dos'}. You now have ${todos.length} pending tasks.`;
+    }
+    
+    // Clear All Todos
+    if ((lowerText.includes('clear all') || lowerText.includes('delete all') || lowerText.includes('remove all')) && 
+        (lowerText.includes('to do') || lowerText.includes('to do') || lowerText.includes('task'))) {
+        console.log('🗑️ Clear all to dos command');
+        
+        if (todos.length === 0) {
+            return "Your to do list is already empty. Nothing to clear!";
+        }
+        
+        const count = todos.length;
+        todos = [];
+        saveTodos();
+        renderTodos();
+        return `Cleared all ${count} to dos. Fresh start! Ready to add new tasks?`;
     }
     
     // Weather
@@ -383,7 +523,7 @@ async function processCommand(text) {
             }
             return `Sorry, I couldn't find weather information for ${city}.`;
         }
-        return "Please specify a city. Say 'What's the weather in [city]?'";
+        return "Please specify a city. Say 'What's the weather in Paris?' or 'Weather in Tunis'";
     }
     
     // Timer
@@ -395,9 +535,9 @@ async function processCommand(text) {
             const unit = match[2].toLowerCase();
             const minutes = unit.startsWith('min') ? value : value / 60;
             startTimer(minutes);
-            return `Timer set for ${value} ${match[2]}${value !== 1 ? 's' : ''}!`;
+            return `Timer set for ${value} ${match[2]}${value !== 1 ? 's' : ''}! I'll let you know when it's done.`;
         }
-        return "Please specify the duration. Say 'Set timer for 5 minutes'";
+        return "Please specify the duration. Say 'Set timer for 5 minutes' or 'Timer for 30 seconds'";
     }
     
     // Calculator
@@ -417,49 +557,39 @@ async function processCommand(text) {
             if (result !== null) {
                 return `The answer is ${result}`;
             }
-            return "I couldn't calculate that. Please try again.";
+            return "I couldn't calculate that. Please try again with a simpler expression.";
         }
     }
-    // Introduction & Personal Info
-if (lowerText.includes('who are you') || 
-    lowerText.includes('introduce yourself') || 
-    lowerText.includes('tell me about yourself') ||
-    lowerText.includes('what is your name') ||
-    lowerText.includes('what\'s your name')) {
-    console.log('👋 Introduction command');
-    return "Hi! I'm Sal7a, your AI productivity assistant. I'm Tunisian, just like my creator Imen. She coded me to help you manage tasks, check weather, and stay productive. What can I help you with today?";
-}
-
-// Who created you
-if (lowerText.includes('who created you') || 
-    lowerText.includes('who made you') || 
-    lowerText.includes('who built you') ||
-    lowerText.includes('who coded you')) {
-    console.log('👩‍💻 Creator question');
-    return "I was created by Imen Jouini, a talented developer from Tunisia. She built me as a voice-controlled productivity assistant using Python, JavaScript, and AI. Pretty cool, right?";
-}
-
-// Where are you from
-if (lowerText.includes('where are you from') || 
-    lowerText.includes('your country') ||
-    lowerText.includes('your ethnicity') ||
-    lowerText.includes('are you tunisian')) {
-    console.log('🇹🇳 Origin question');
-    return "I'm Tunisian! My creator Imen is from Tunisia, and she gave me a Tunisian identity. Sal7a means 'prayer' in Tunisian Arabic. I'm proud to represent Tunisian innovation in AI!";
-}
-
-// What does your name mean
-if (lowerText.includes('what does sal7a mean') || 
-    lowerText.includes('what does your name mean') ||
-    lowerText.includes('meaning of sal7a')) {
-    console.log('📖 Name meaning question');
-    return "Sal7a is Tunisian Arabic for 'prayer' or 'blessing'. Imen chose this name because I'm here to help and support you, like a blessing in your daily productivity. It's written with a 7 because that's how we write the Arabic letter ح in Latin script!";
-}
-
+    
+    // Run Demo - FIXED VERSION
+    if (lowerText.includes('run demo') || 
+        lowerText.includes('start demo') || 
+        lowerText.includes('show demo') ||
+        lowerText.includes('demo mode') ||
+        lowerText.includes('demonstrate')) {
+        console.log('🎬 Demo command');
+        
+        // Get the demo button directly
+        const demoBtnElement = document.getElementById('demoButton');
+        console.log('Demo button found:', demoBtnElement);
+        console.log('Demo button disabled:', demoBtnElement ? demoBtnElement.disabled : 'N/A');
+        
+        if (demoBtnElement && !demoBtnElement.disabled) {
+            console.log('Clicking demo button...');
+            demoBtnElement.click();
+            return "Starting demo mode! Watch as I showcase all my features. This will take about 20 seconds.";
+        } else if (demoBtnElement && demoBtnElement.disabled) {
+            return "Demo is already running! Please wait for it to finish.";
+        } else {
+            console.error('Demo button not found!');
+            return "Sorry, I can't start the demo right now. Try clicking the demo button manually.";
+        }
+    }
+    
     // Help/Commands
     if (lowerText.includes('help') || lowerText.includes('what can you do') || lowerText.includes('commands')) {
         console.log('❓ Help command');
-        return "I can help you with: adding todos, checking weather, setting timers, and doing calculations. Try saying 'Add todo: finish project' or 'What's the weather in Paris?'";
+        return "I can help you with to dos, weather, timers, and calculations. Try: 'Add to do', 'Show my to dos', 'Export to dos', 'Clear completed', 'Run demo', 'What's the weather in Tunis?', or 'Set timer for 5 minutes'. Ask 'Who are you?' to learn about me!";
     }
     
     // If no command matched, send to AI
@@ -606,12 +736,12 @@ document.addEventListener('keydown', (e) => {
 // Widget buttons
 document.getElementById('clearCompleted').addEventListener('click', () => {
     clearCompleted();
-    addMessage("Cleared completed todos", false);
+    addMessage("Cleared completed to dos", false);
 });
 
-document.getElementById('exportTodos').addEventListener('click', () => {
+document.getElementById('exportTo dos').addEventListener('click', () => {
     exportTodos();
-    addMessage("Todos exported!", false);
+    addMessage("To dos exported!", false);
 });
 
 document.getElementById('pauseTimer').addEventListener('click', pauseTimer);
