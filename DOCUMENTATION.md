@@ -1,74 +1,182 @@
+#  Sal7a - صالحة
+**Your Tunisian AI productivity sidekick that actually listens (literally)**
 
-# Sal7a Voice Assistant - AI Productivity Dashboard
-
-An intelligent voice-controlled productivity assistant powered by AI. Manage tasks, check weather, set timers, and perform calculations - all with your voice!
+> Built with ❤️ by Imen Jouini
 
 
+---
 
-##  Features
+## What's This About?
 
-### Voice Commands
-- **Natural Language Processing** - Speak naturally, the AI understands context
-- **Multi-Command Support** - Todo management, weather, timers, calculations
-- **Real-time Transcription** - See your words as you speak
+Ever wanted to boss around your computer with just your voice? Meet Sal7a - she's a voice-controlled AI assistant I built that helps you stay productive without touching your keyboard. 
+The whole thing runs in your browser, looks gorgeous with a glassmorphism design, and actually works (I promise I tested it... extensively).
 
-### Task Management
-- **Voice-Controlled Todos** - "Add todo: finish project"
-- **Complete & Delete** - Mark tasks done or remove them
-- **Persistent Storage** - Tasks saved locally, survive page refresh
-- **Export Functionality** - Download your todo list as text file
+---
 
-### Weather Information
-- **Live Weather Data** - Check current conditions for any city
-- **Detailed Metrics** - Temperature, humidity, wind speed
-- **Voice Queries** - "What's the weather in Paris?"
+## Cool Stuff You Can Do
 
-###  Smart Timer
-- **Voice-Activated** - "Set timer for 5 minutes"
-- **Visual Countdown** - Large, clear display
-- **Audio Notification** - Sound alert when time's up
-- **Pause/Resume** - Full timer controls
+**Just talk to her. Seriously.**
 
-### Natural Language Calculator
-- **Voice Calculations** - "Calculate 15 percent of 1000"
-- **Natural Language** - Understands "times", "of", "percent"
-- **Instant Results** - Visual display of calculations
+- "Add todo: buy groceries" → Boom, it's on your list
+- "What's the weather in Tunis?" → She'll tell you (with simulated data for now, but hey)
+- "Set timer for 25 minutes" → Perfect for Pomodoro sessions
+- "Calculate 15% of 85000" → Because math is hard
+- "Who are you?" → She'll introduce herself (she's pretty proud to be Tunisian)
+- "Run demo" → Sit back and watch her show off
 
-### Demo Mode
-- **Automated Showcase** - Demonstrates all features automatically
-- **Perfect for Presentations** - No awkward live demos
-- **Recruiter-Ready** - Shows capabilities in 90 seconds
+**The best part?** Your todos stick around even after you close the browser. Magic? No, just localStorage.
 
-## Tech Stack
+---
 
-| Layer | Technology |
-|-------|-----------|
-| **Frontend** | HTML5, CSS3, Vanilla JavaScript |
-| **Speech Recognition** | Web Speech API (Chrome/Edge) |
-| **AI Engine** | Groq API (Llama 3.1) |
-| **Text-to-Speech** | Google TTS (gTTS) |
-| **Backend** | Python Flask |
-| **Data Storage** | LocalStorage API |
-| **Styling** | Custom CSS with gradients & animations |
+## Tech Stuff (For the Nerds)
 
-## Quick Start
+I used:
+- **Python Flask** for the backend (keeping it simple)
+- **Groq's Llama 3.1** for the AI brain (totally free, no credit card nonsense)
+- **Web Speech API** because Chrome already has speech recognition built-in
+- **Google TTS** to make her talk back
+- **Vanilla JavaScript** - no frameworks, just pure code
+- **Glassmorphism CSS** because 2024 called and said flat design is over
 
-### Prerequisites
-- Python 3.11+
-- Chrome or Edge browser
-- Groq API key (free at [console.groq.com](https://console.groq.com))
+**Why these choices?**
+- Everything's free 
+- No credit cards needed anywhere
+- Works entirely in your browser
+- Looks way better than it has any right to
 
-### Installation
+---
 
-1. **Clone the repository**
+## Getting Started
+
+### What You'll Need
+- Python 3.11 or newer
+- Chrome or Edge (Firefox doesn't play nice with voice stuff)
+- A Groq API key (it's free, takes 2 minutes to get)
+
+### Installation (The Easy Way)
+
+1. **Grab the code**
 
    git clone https://github.com/ImenJ16/Sal7a-Voice-Assistant-.git
    cd Sal7a-Voice-Assistant-
 
-2. **Install dependencies**
+
+2. **Install the Python stuff**
 
    pip install flask flask-cors groq gTTS python-dotenv
 
-**Created:** January 2026
-**Last Updated:** January 15, 2026
-**Status:** Production Ready and I had fun making it ! 
+
+3. **Get your API key**
+   - Head to [console.groq.com](https://console.groq.com)
+   - Sign up (just email, no credit card)
+   - Create an API key
+   - Copy it
+
+4. **Set up your environment**
+   - Copy `.env.example` to `.env`
+   - Paste your API key in there:
+
+     GROQ_API_KEY=your-actual-key-here
+
+
+5. **Fire it up**
+
+   python server.py
+
+
+6. **Open your browser**
+   - Go to `http://localhost:5000`
+   - Click the microphone
+   - Start talking!
+
+---
+
+## Voice Commands Cheat Sheet
+
+**Personal Questions:**
+- "Who are you?"
+- "Who created you?"
+- "What does your name mean?"
+
+**Todo List:**
+- "Add todo: [whatever you need to do]"
+- "Show my todos"
+- "Check todo 1" (marks it done)
+- "Delete todo 2"
+- "Clear completed"
+- "Export my todos"
+
+**Utilities:**
+- "What's the weather in [city]?"
+- "Set timer for 5 minutes"
+- "Calculate 20% of 150"
+
+**Meta:**
+- "Run demo" (watch her flex)
+- "Help" (she'll explain what she can do)
+
+---
+
+
+I learned a ton about voice APIs, glassmorphism, and why you should NEVER hardcode API keys (GitHub will yell at you).
+
+---
+
+## Known Issues (AKA "Features")
+
+- Weather data is currently simulated (working on integrating a real API)
+- Speech recognition needs a good microphone (your laptop's built-in mic might struggle)
+- She only speaks English for now (Arabic support coming... eventually)
+
+## Want to Contribute?
+
+Got ideas? Found bugs? Want to add features? Pull requests are welcome! Just:
+1. Fork it
+2. Create a feature branch
+3. Make your changes
+4. Test it (please)
+5. Submit a PR
+
+## What's Next?
+
+Things I want to add:
+- [ ] Real weather API integration
+- [ ] Arabic language support
+- [ ] Google Calendar integration
+- [ ] Custom wake word ("Hey Sal7a...")
+
+---
+
+## Tech Details for Resume Padding
+
+**APIs Used:**
+- Groq API (AI inference)
+- Web Speech API (voice recognition)
+- Google TTS (text-to-speech)
+- LocalStorage API (data persistence)
+
+**Skills Demonstrated:**
+- Full-stack development (Python + JavaScript)
+- API integration and authentication
+- Voice interface design
+- Real-time data processing
+- Responsive UI/UX design
+- State management
+- Glassmorphism effects
+- Git version control (the hard way)
+
+---
+
+
+## Credits
+
+**Created by:** Imen Jouini  
+**Year:** 2026  
+**Mood while coding:** Caffeinated and determined  
+**Hours spent debugging voice recognition:** Too many  
+**Satisfaction level now that it works:** 100%
+
+
+**If this helped you or made you smile, drop a star!**
+
+**Questions? Open an issue. I actually read them.**
