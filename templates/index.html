@@ -3,106 +3,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Voice Assistant - Productivity Dashboard</title>
+    <title>Sal7a - AI Voice Assistant</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
+    
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop playsinline>
+            <source src="/static/background.mp4.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
     <!-- Main Container -->
-    <div class="container">
+    <div class="app-container">
         
         <!-- Header -->
-        <header>
-            <h1>SAL7A - AI Productivity Assistant</h1>
-            <p class="subtitle">Voice-controlled productivity dashboard</p>
-            <button class="demo-button" id="demoButton">Run Demo</button>
+        <header class="glass-header">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1 class="app-title">🤖 Sal7a</h1>
+                    <span class="app-subtitle">صالحة</span>
+                </div>
+                <div class="header-right">
+                    <p class="creator-tag">🇹🇳 Created by Imen Jouini</p>
+                    <button class="demo-btn glass" id="demoButton">
+                        <span>▶️</span> Run Demo
+                    </button>
+                </div>
+            </div>
         </header>
 
-        <!-- Main Content Area -->
-        <div class="main-content">
+        <!-- Main Content Grid -->
+        <div class="content-grid">
             
-            <!-- Left Panel: Chat -->
-            <div class="chat-panel">
-                <h3>💬 Conversation</h3>
-                <div class="chat-container" id="chatContainer">
+            <!-- Left Column: Chat -->
+            <div class="chat-section glass">
+                <div class="section-header">
+                    <h2>💬 Conversation</h2>
+                </div>
+                <div class="chat-messages" id="chatContainer">
+                    <!-- Welcome Message -->
                     <div class="message bot-message">
-                        <div class="message-content">
-                            <p>Marhba! I'm Sal7a, your productivity assistant. Try saying:</p>
-                            <ul>
-                                <li>"Add todo: Finish project"</li>
-                                <li>"Show my todos"</li>
-                                <li>"What's the weather in Paris?"</li>
-                                <li>"Set timer for 5 minutes"</li>
-                                <li>"Calculate 15% of 1000"</li>
+                        <div class="message-bubble glass-dark">
+                            <p><strong>👋 Marhba!</strong> I'm Sal7a, your Tunisian AI assistant.</p>
+                            <p style="margin-top: 8px; font-size: 13px; opacity: 0.9;">Try saying:</p>
+                            <ul style="margin: 8px 0 0 20px; font-size: 13px;">
+                                <li>"Who are you?"</li>
+                                <li>"Add todo: finish project"</li>
+                                <li>"What's the weather in Tunis?"</li>
+                                <li>"Run demo"</li>
                             </ul>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Right Panel: Widgets -->
-            <div class="widgets-panel">
+            <!-- Right Column: Widgets -->
+            <div class="widgets-section">
                 
-                <!-- Todo List Widget -->
-                <div class="widget todo-widget">
-                    <h3>✅ Todo List</h3>
-                    <div class="todo-list" id="todoList">
-                        <p class="empty-state">No todos yet. Say "Add todo: [your task]"</p>
+                <!-- Todo Widget -->
+                <div class="widget glass">
+                    <div class="widget-header">
+                        <h3>✅ Todo List</h3>
                     </div>
-                    <div class="todo-actions">
-                        <button class="widget-button" id="clearCompleted">Clear Completed</button>
-                        <button class="widget-button" id="exportTodos">📥 Export</button>
+                    <div class="widget-content">
+                        <div class="todo-list" id="todoList">
+                            <p class="empty-state">No todos yet. Say "Add todo: [task]"</p>
+                        </div>
+                        <div class="widget-actions">
+                            <button class="action-btn glass-btn" id="clearCompleted">Clear Done</button>
+                            <button class="action-btn glass-btn" id="exportTodos">📥 Export</button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Weather Widget -->
-                <div class="widget weather-widget" id="weatherWidget" style="display: none;">
-                    <h3>🌤️ Weather</h3>
-                    <div class="weather-content" id="weatherContent">
+                <div class="widget glass" id="weatherWidget" style="display: none;">
+                    <div class="widget-header">
+                        <h3>🌤️ Weather</h3>
+                    </div>
+                    <div class="widget-content" id="weatherContent">
                         <!-- Weather data will appear here -->
                     </div>
                 </div>
 
                 <!-- Timer Widget -->
-                <div class="widget timer-widget" id="timerWidget" style="display: none;">
-                    <h3>⏱️ Timer</h3>
-                    <div class="timer-display" id="timerDisplay">00:00</div>
-                    <div class="timer-controls">
-                        <button class="widget-button" id="pauseTimer">Pause</button>
-                        <button class="widget-button" id="cancelTimer">Cancel</button>
+                <div class="widget glass" id="timerWidget" style="display: none;">
+                    <div class="widget-header">
+                        <h3>⏱️ Timer</h3>
+                    </div>
+                    <div class="widget-content">
+                        <div class="timer-display glass-dark" id="timerDisplay">00:00</div>
+                        <div class="widget-actions">
+                            <button class="action-btn glass-btn" id="pauseTimer">Pause</button>
+                            <button class="action-btn glass-btn" id="cancelTimer">Cancel</button>
+                        </div>
                     </div>
                 </div>
 
                 <!-- Calculator Widget -->
-                <div class="widget calculator-widget" id="calculatorWidget" style="display: none;">
-                    <h3>🔢 Calculator</h3>
-                    <div class="calculator-result" id="calculatorResult">
-                        <!-- Calculation results will appear here -->
+                <div class="widget glass" id="calculatorWidget" style="display: none;">
+                    <div class="widget-header">
+                        <h3>🔢 Calculator</h3>
+                    </div>
+                    <div class="widget-content">
+                        <div class="calculator-result glass-dark" id="calculatorResult">
+                            <!-- Results appear here -->
+                        </div>
                     </div>
                 </div>
 
             </div>
         </div>
 
-        <!-- Input Area (Bottom) -->
-        <div class="input-area">
-            <!-- Microphone Button -->
-            <button class="mic-button" id="micButton">
-                <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
-                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
-                    <line x1="12" y1="19" x2="12" y2="23"></line>
-                    <line x1="8" y1="23" x2="16" y2="23"></line>
-                </svg>
-                <span class="mic-text">Tap to speak</span>
-            </button>
-
-            <!-- Status indicator -->
-            <div class="status" id="status">Ready</div>
+        <!-- Control Bar (Bottom) -->
+        <div class="control-bar glass">
+            <div class="control-content">
+                <button class="mic-button glass-glow" id="micButton">
+                    <svg class="mic-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                        <line x1="8" y1="23" x2="16" y2="23"></line>
+                    </svg>
+                </button>
+                <div class="status-indicator" id="status">Ready to listen</div>
+            </div>
         </div>
 
     </div>
 
-    <!-- Audio player (hidden, for playing responses) -->
+    <!-- Audio Player -->
     <audio id="audioPlayer" style="display: none;"></audio>
 
     <!-- JavaScript -->

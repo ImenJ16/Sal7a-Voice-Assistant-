@@ -91,8 +91,11 @@ function removeTypingIndicator() {
 
 // ===== FUNCTION: Update status =====
 function updateStatus(text, className = '') {
-    status.textContent = text;
-    status.className = 'status ' + className;
+    const statusEl = document.getElementById('status');
+    if (statusEl) {
+        statusEl.textContent = text;
+        statusEl.className = 'status-indicator ' + className;
+    }
 }
 
 // ===== TODO FUNCTIONS =====
